@@ -4,7 +4,7 @@ A free, local AI bot that plays **Roblox Tower Defense Simulator** by itself: it
 numbers, decides, and presses the keys and mouse like a player. Built for **Molten mode on Farm Lands, solo**,
 and it can loop match after match unattended.
 
-![The Farm Lands map with the bot's tower spots](docs/map.jpg)
+![The Farm Lands map with the bot's tower spots](docs/map-en.jpg)
 
 ## What it does
 
