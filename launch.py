@@ -48,11 +48,11 @@ def start_jev_brain(cfg):
     if cfg["brain"].get("backend") != "jev" or "typesafe.ai" in url:
         return None
     if server_up(url):
-        say("สมอง Jev ทำงานอยู่แล้ว")
+        say("The Jev brain is already running")
         return None
     if not ONEJEV_PY.exists():
-        raise SystemExit("ยังไม่ได้ติดตั้งสมอง Jev: รัน setup.bat ก่อน")
-    say("กำลังเปิดสมอง Jev ในเครื่อง (ประมาณ 30 วินาที)...")
+        raise SystemExit("The Jev brain is not installed: run setup.bat first")
+    say("Starting the local Jev brain (about 30 s)...")
     # Shares this console: closing the window or Ctrl+C stops it too. Its output goes to onejev_server.log.
     log = open(SERVER_LOG, "w", encoding="utf-8")
     proc = subprocess.Popen([str(ONEJEV_PY), str(ROOT / "onejev_server.py"), "--port", url.rsplit(":", 1)[-1]],
@@ -64,9 +64,9 @@ def start_jev_brain(cfg):
             proc.kill()
             log.close()
             tail = SERVER_LOG.read_text(encoding="utf-8", errors="replace").splitlines()[-15:]
-            raise SystemExit("เปิดสมอง Jev ไม่สำเร็จ (ดู onejev_server.log):\n" + "\n".join(tail))
+            raise SystemExit("The Jev brain failed to start (see onejev_server.log):\n" + "\n".join(tail))
         time.sleep(1)
-    say(f"สมอง Jev พร้อมแล้ว ({time.monotonic() - t0:.0f} วินาที)")
+    say(f"The Jev brain is ready ({time.monotonic() - t0:.0f} s)")
     return proc
 
 
@@ -86,22 +86,22 @@ def ensure_ollama(cfg):
         return None
     url, model = need
     if not server_up(url, "/api/tags"):
-        say("กำลังเปิด Ollama...")
+        say("Starting Ollama...")
         try:
             subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                              creationflags=subprocess.CREATE_NO_WINDOW)
         except FileNotFoundError:
-            raise SystemExit("ไม่พบ Ollama: ติดตั้งจาก https://ollama.com แล้วลองใหม่") from None
+            raise SystemExit("Ollama not found: install it from https://ollama.com and try again") from None
         for _ in range(60):
             if server_up(url, "/api/tags"):
                 break
             time.sleep(1)
         else:
-            raise SystemExit("เปิด Ollama ไม่สำเร็จ")
+            raise SystemExit("Ollama failed to start")
     with urllib.request.urlopen(url + "/api/tags", timeout=5) as r:
         names = {m["name"] for m in json.load(r)["models"]}
     if model not in names and f"{model}:latest" not in names:
-        say(f"กำลังดาวน์โหลด {model} สำหรับอ่านตัวเลข (ครั้งเดียว ประมาณ 3 GB)...")
+        say(f"Downloading {model} to read the numbers (once, about 3 GB)...")
         subprocess.run(["ollama", "pull", model], check=True)
     return need
 
@@ -118,7 +118,7 @@ def warm_ollama(need, keep_alive):
                                                           headers={"Content-Type": "application/json"}),
                                    timeout=300).close()
         except OSError as e:
-            say(f"โหลด {model} ไม่สำเร็จ ({e}) บอทจะลองเองอีกครั้ง")
+            say(f"Loading {model} failed ({e}); the bot will try again by itself")
 
     worker = threading.Thread(target=load, name="warm-reader", daemon=True)
     worker.start()
@@ -139,10 +139,10 @@ def unload_ollama(need):
 def wait_for_roblox(title):
     if client_region(find_window(title)):
         return
-    say("ยังไม่เจอ Roblox: เปิด Tower Defense Simulator ไว้ แล้วบอทจะไปต่อเอง (Ctrl+C = ยกเลิก)")
+    say("Roblox not found yet: open Tower Defense Simulator and the bot carries on by itself (Ctrl+C = cancel)")
     while not client_region(find_window(title)):
         time.sleep(2)
-    say("เจอ Roblox แล้ว")
+    say("Found Roblox")
 
 
 def pressed_within(keys, seconds):
@@ -158,12 +158,12 @@ def pressed_within(keys, seconds):
 
 
 def edit_plan(config_path):
-    say("เปิดหน้าต่างแผนการวางป้อม: แก้แล้วกด Save แล้วปิดหน้าต่างเพื่อเริ่มบอท")
+    say("Opening the build plan window: edit it, press Save, then close the window to start the bot")
     subprocess.run([sys.executable, str(ROOT / "plan_editor.py"), str(config_path)], cwd=ROOT)
 
 
 def mark_spots(config_path):
-    say("มาร์กจุดวางป้อม: เข้าแมตช์ใน Roblox ให้เห็นแมพ แล้วกด Enter ที่หน้าต่างนี้")
+    say("Marking tower spots: join a match in Roblox so the map shows, then press Enter in this window")
     input()
     subprocess.run([sys.executable, str(ROOT / "calibrate.py"), "--config", str(config_path),
                     "--only", "spots", "--focus", "--delay", "1"], cwd=ROOT)
@@ -175,10 +175,10 @@ def main():
     config_path = Path(args[args.index("--config") + 1]) if "--config" in args else ROOT / "config.json"
     cfg = json.loads(config_path.read_text(encoding="utf-8"))
     if bot_running():
-        say("บอทอีกตัวเปิดอยู่แล้ว (หน้าต่าง TDS Bot - preview) ปิดตัวเก่าก่อน: กด ESC หรือปิดหน้าต่างนั้น"
-            " / Another bot is already running: close it first (ESC).")
+        say("Another bot is already running (the TDS Bot - preview window): close it first with ESC "
+            "or by closing that window.")
         if sys.stdin.isatty():
-            input("กด Enter เพื่อปิด / Press Enter to close ")
+            input("Press Enter to close ")
         return
     brain = reader = None
     try:
@@ -188,18 +188,18 @@ def main():
         wait_for_roblox(cfg["capture"].get("window_title", "Roblox"))
         if sys.stdin.isatty():
             if not cfg.get("placement_spots"):
-                say("ยังไม่มีจุดวางป้อม (ครั้งแรก หรือแมพใหม่)")
+                say("No tower spots yet (first run or a new map)")
                 mark_spots(config_path)
-            say("ภายใน 3 วินาที: C = มาร์กจุดวางป้อมใหม่ (เปลี่ยนแมพ), P = แก้แผนการวางป้อม, ไม่กด = เริ่มเลย")
+            say("Within 3 s: C = mark the tower spots again (new map), P = edit the build plan, nothing = start now")
             key = pressed_within(C_KEYS + P_KEYS, 3)
             if key and key in C_KEYS:
                 mark_spots(config_path)
             elif key and key in P_KEYS:
                 edit_plan(config_path)
         if warming and warming.is_alive():
-            say(f"รอโหลดตัวอ่านตัวเลข ({reader[1]}) เข้าการ์ดจอ...")
+            say(f"Waiting for the number reader ({reader[1]}) to load into the GPU...")
             warming.join(300)
-        say("เริ่มบอท: เล่นเองใน 3 วินาที | Q = หยุด/เล่นต่อ | ESC = ปิดบอท")
+        say("Starting the bot: it plays in 3 s | Q = pause/resume | ESC = stop the bot")
         subprocess.run([sys.executable, str(ROOT / "tds_bot.py"), "--autostart", *args], cwd=ROOT)
     except KeyboardInterrupt:
         pass
@@ -207,7 +207,7 @@ def main():
         if reader:
             unload_ollama(reader)
         if brain and brain.poll() is None:
-            say("กำลังปิดสมอง Jev...")
+            say("Stopping the Jev brain...")
             brain.terminate()
             try:
                 brain.wait(10)
