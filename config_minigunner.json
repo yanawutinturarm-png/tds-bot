@@ -1,0 +1,348 @@
+{
+  "capture": {
+    "window_title": "Roblox",
+    "auto_find_window": true,
+    "region": {
+      "left": 0,
+      "top": 0,
+      "width": 1920,
+      "height": 1080
+    },
+    "fps": 30
+  },
+  "brain": {
+    "backend": "jev",
+    "min_interval": 0.35,
+    "image_width": 448,
+    "include_full_frame": true,
+    "jev": {
+      "url": "http://127.0.0.1:8000",
+      "model": "jev-latest",
+      "api_key_env": "TYPESAFE_API_KEY",
+      "timeout": 10,
+      "min_confidence": 0.25
+    },
+    "ollama": {
+      "url": "http://127.0.0.1:11434",
+      "model": "gemma3:4b",
+      "timeout": 15,
+      "keep_alive": "30m",
+      "max_tokens": 96,
+      "think": false
+    },
+    "openai": {
+      "base_url": "https://YOUR-JEV-AI-ENDPOINT/v1",
+      "model": "YOUR-VISION-MODEL",
+      "api_key_env": "JEV_API_KEY",
+      "timeout": 15,
+      "max_tokens": 96,
+      "json_mode": true
+    }
+  },
+  "reader": {
+    "enabled": true,
+    "url": "http://127.0.0.1:11434",
+    "model": "gemma3:4b",
+    "timeout": 10,
+    "load_timeout": 180,
+    "keep_alive": "30m",
+    "interval": 0.3
+  },
+  "placement": {
+    "probe": true,
+    "search_px": [0, 28, 56, 84],
+    "patch_px": 60,
+    "settle_s": 0.1,
+    "max_probe_s": 3.0,
+    "red_ratio": 0.2,
+    "min_changed": 0.015,
+    "auto_spots": true,
+    "auto_spot_px": 70,
+    "debug_images": 12,
+    "cliff_search_s": 10.0,
+    "cluster_px": 250
+  },
+  "actions": [
+    "PLACE_TOWER_1",
+    "PLACE_TOWER_2",
+    "PLACE_TOWER_3",
+    "PLACE_TOWER_4",
+    "PLACE_TOWER_5",
+    "UPGRADE_SELECTED",
+    "WAIT"
+  ],
+  "towers": {
+    "1": {
+      "name": "Soldier",
+      "cost": 400,
+      "limit": 0,
+      "note": "cheap first waves; sees hidden enemies from level 2 (Molten Demons are hidden, from wave 11); level 3 is 20 DPS, range 19",
+      "spots": [10, 12, 13],
+      "upgrade_costs": [100, 700, 1850, 6000],
+      "max_level": 4
+    },
+    "2": {
+      "name": "Minigunner",
+      "cost": 1850,
+      "note": "no placement limit: early it sees hidden enemies from level 1, late it soaks up the end-game money (level 4: 160 DPS, three times a Soldier per tower slot)",
+      "upgrade_costs": [350, 1500, 6500, 21500],
+      "max_level": 4,
+      "spots": [9, 6]
+    },
+    "3": {
+      "name": "Crook Boss",
+      "cost": 2250,
+      "limit": 5,
+      "note": "long range (22 at level 3) plus goons that walk the path: the most damage on a slow boss walking past; sees hidden enemies from level 2",
+      "upgrade_costs": [1500, 2750, 14000, 47500],
+      "max_level": 4,
+      "spots": [1, 2, 3, 5, 4]
+    },
+    "4": {
+      "name": "Commander",
+      "cost": 650,
+      "limit": 6,
+      "note": "support: towers in its range fire 10-20% faster (range 10 studs, 15 at level 3); stands among the guns, not by the path; does not attack on its own",
+      "upgrade_costs": [400, 2450, 4500, 14000],
+      "max_level": 4,
+      "spots": [19, 20]
+    },
+    "5": {
+      "name": "Warden",
+      "cost": 1850,
+      "limit": 12,
+      "hug_path": true,
+      "note": "melee: stands right next to the path; best damage per dollar; sees hidden enemies from level 1, lead from 2; stuns what it hits from level 3; level 4 is immune to stuns (the Warlord's slams)",
+      "upgrade_costs": [975, 1987, 5750, 16500],
+      "max_level": 4,
+      "spots": [11, 15, 8, 16, 14]
+    }
+  },
+  "plan": [
+    {"tower": "Soldier", "count": 3, "upgrade_to": 1},
+    {"tower": "Soldier", "count": 0, "upgrade_to": 2},
+    {"tower": "Minigunner", "count": 1, "upgrade_to": 1},
+    {"tower": "Soldier", "count": 0, "upgrade_to": 3},
+    {"tower": "Minigunner", "count": 1, "upgrade_to": 2},
+    {"tower": "Minigunner", "count": 0, "upgrade_to": 2},
+    {"tower": "Crook Boss", "count": 1, "upgrade_to": 2},
+    {"tower": "Crook Boss", "count": 1, "upgrade_to": 2},
+    {"tower": "Warden", "count": 2, "upgrade_to": 2},
+    {"tower": "Commander", "count": 1, "upgrade_to": 1},
+    {"tower": "Crook Boss", "count": 0, "upgrade_to": 3},
+    {"tower": "Warden", "count": 0, "upgrade_to": 3},
+    {"tower": "Crook Boss", "count": 1, "upgrade_to": 3},
+    {"tower": "Warden", "count": 2, "upgrade_to": 3},
+    {"tower": "Commander", "count": 1, "upgrade_to": 1},
+    {"tower": "Crook Boss", "count": 1, "upgrade_to": 3},
+    {"tower": "Warden", "count": 2, "upgrade_to": 3},
+    {"tower": "Commander", "count": 0, "upgrade_to": 3},
+    {"tower": "Commander", "count": 0, "upgrade_to": 4},
+    {"tower": "Warden", "count": 0, "upgrade_to": 4},
+    {"tower": "Crook Boss", "count": 1, "upgrade_to": 3},
+    {"tower": "Warden", "count": 2, "upgrade_to": 4},
+    {"tower": "Warden", "count": 4, "upgrade_to": 4},
+    {"tower": "Commander", "count": 2, "upgrade_to": 4},
+    {"tower": "Commander", "count": 2, "upgrade_to": 4},
+    {"tower": "Minigunner", "count": 0, "upgrade_to": 4},
+    {"tower": "Minigunner", "count": 14, "upgrade_to": 4},
+    {"tower": "Soldier", "count": 0, "upgrade_to": 4},
+    {"tower": "Crook Boss", "count": 0, "upgrade_to": 4}
+  ],
+  "after_plan": "ai",
+  "strategy_hint": "Molten, solo, no farms. Early: Soldiers (level 2+ sees hidden enemies; Molten Demons are hidden from wave 11) and two Minigunners. Then Crook Bosses, Wardens right next to the path and Commanders among them. Late: fill every free tower slot with Minigunners at level 4. Use WAIT only to save for something.",
+  "rois": {
+    "cash": [0.6, 0.935, 0.085, 0.03],
+    "towers_count": [0.6, 0.962, 0.065, 0.03],
+    "wave": [0.325, 0.015, 0.07, 0.075],
+    "hotbar": [0.395, 0.915, 0.21, 0.08],
+    "upgrade_panel": [0.33, 0.58, 0.34, 0.31],
+    "upgrade_box": [0.478, 0.595, 0.185, 0.11],
+    "sell_button": [0.37, 0.849, 0.035, 0.016],
+    "ready_button": [0.499, 0.156, 0.075, 0.044],
+    "cash_list": [0.93, 0.105, 0.065, 0.035]
+  },
+  "auto_ready": true,
+  "placement_spots": [
+    [0.5328, 0.4778],
+    [0.5437, 0.5361],
+    [0.557, 0.4736],
+    [0.5742, 0.425],
+    [0.5312, 0.6042],
+    [0.5047, 0.6111],
+    [0.6047, 0.4306],
+    [0.6234, 0.4597],
+    [0.4852, 0.6181],
+    [0.4578, 0.4847],
+    [0.6211, 0.3903],
+    [0.4633, 0.6306],
+    [0.4273, 0.5139],
+    [0.5062, 0.7333],
+    [0.4646, 0.7741],
+    [0.4677, 0.3685],
+    [0.3742, 0.5931],
+    [0.332, 0.5417],
+    [0.5771, 0.463],
+    [0.4865, 0.7481]
+  ],
+  "skip_wave_button": null,
+  "keys": {
+    "tower_1": "1",
+    "tower_2": "2",
+    "tower_3": "3",
+    "tower_4": "4",
+    "tower_5": "5",
+    "upgrade": "e",
+    "sell": "x",
+    "skip_wave": "f",
+    "cancel": "q"
+  },
+  "cooldowns": {
+    "PLACE_TOWER": 1.5,
+    "UPGRADE_SELECTED": 0.8,
+    "SKIP_WAVE": 10,
+    "SELL": 1.0
+  },
+  "hotkeys": {
+    "pause": "Q",
+    "kill": "ESC"
+  },
+  "safety": {
+    "start_paused": true,
+    "require_focus": true,
+    "dry_run": false,
+    "keep_awake": true,
+    "refocus_after_s": 60
+  },
+  "input": {
+    "key_hold": 0.04,
+    "click_hold": 0.05,
+    "step_delay": 0.06
+  },
+  "preview": {
+    "enabled": true,
+    "width": 960,
+    "show_ai_input": true
+  },
+  "log_file": "bot_log.jsonl",
+  "check_loadout": true,
+  "auto_restart": true,
+  "abilities": [
+    {
+      "name": "Call to Arms",
+      "key": "f",
+      "tower": "Commander",
+      "min_level": 2,
+      "cooldown": 31,
+      "per_tower": true,
+      "from_wave": 8
+    },
+    {
+      "name": "Support Caravan",
+      "key": "b",
+      "tower": "Commander",
+      "min_level": 4,
+      "cooldown": 61,
+      "per_tower": true,
+      "cost": 2000,
+      "keep": 3000,
+      "when": "boss",
+      "always_from_wave": 25
+    }
+  ],
+  "handover": {
+    "wave": 0,
+    "nobody_s": 45,
+    "record": true,
+    "beep": true,
+    "frame_every_s": 3
+  },
+  "endgame": {
+    "enabled": true,
+    "from_wave": 34,
+    "boss_wave": 35,
+    "final_wave": "lose",
+    "sell": [
+      "Farm"
+    ],
+    "sell_far_px": 180,
+    "keep": [
+      "Warden",
+      "Crook Boss",
+      "Commander"
+    ],
+    "max_out": [
+      "Crook Boss",
+      "Warden",
+      "Commander"
+    ],
+    "target": {
+      "Crook Boss": 2
+    },
+    "target_arrow": [0.454, 0.755],
+    "leapfrog": {"tower": "Warden", "behind": 0.05, "ahead": [0.08, 0.2], "keep_cash": 2500, "start_after": 0.15},
+    "boss_speed": 0.007
+  },
+  "path": [
+    [0.4159, 0.2317],
+    [0.4178, 0.2542],
+    [0.4197, 0.2861],
+    [0.4216, 0.3171],
+    [0.4234, 0.3481],
+    [0.4266, 0.376],
+    [0.4325, 0.3996],
+    [0.4407, 0.4173],
+    [0.4524, 0.4294],
+    [0.4662, 0.4373],
+    [0.4837, 0.4393],
+    [0.5018, 0.4385],
+    [0.5221, 0.4325],
+    [0.5416, 0.423],
+    [0.5576, 0.3999],
+    [0.5669, 0.3727],
+    [0.576, 0.3562],
+    [0.5885, 0.346],
+    [0.6043, 0.3414],
+    [0.623, 0.3444],
+    [0.6423, 0.3549],
+    [0.6573, 0.3871],
+    [0.6606, 0.4222],
+    [0.6602, 0.4535],
+    [0.6551, 0.4867],
+    [0.6424, 0.5135],
+    [0.6222, 0.5321],
+    [0.6157, 0.5533],
+    [0.6119, 0.5785],
+    [0.607, 0.6021],
+    [0.5993, 0.6221],
+    [0.5897, 0.6373],
+    [0.5771, 0.6476],
+    [0.5633, 0.6552],
+    [0.5476, 0.6597],
+    [0.5314, 0.6633],
+    [0.5155, 0.6673],
+    [0.4996, 0.6715],
+    [0.4834, 0.6753],
+    [0.469, 0.6815],
+    [0.4559, 0.691],
+    [0.4449, 0.7048],
+    [0.4375, 0.7242],
+    [0.432, 0.7471],
+    [0.43, 0.7756],
+    [0.4311, 0.8081],
+    [0.4355, 0.8416],
+    [0.446, 0.8736],
+    [0.4735, 0.8844],
+    [0.4903, 0.8863],
+    [0.5092, 0.8849],
+    [0.5289, 0.8809],
+    [0.5492, 0.8753],
+    [0.5681, 0.8752],
+    [0.5818, 0.8865],
+    [0.5923, 0.9001],
+    [0.6052, 0.9097],
+    [0.6114, 0.93],
+    [0.6131, 0.9576],
+    [0.6259, 0.9703]
+  ]
+}

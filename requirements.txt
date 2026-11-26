@@ -1,0 +1,8 @@
+# The bot itself. The default "jev" brain talks to a local OneJev server over HTTP;
+# that server lives in its own venv (.venv-onejev, PyTorch) - see "Free local Jev"
+# in README.md. There is no "jev-ai" package on PyPI.
+mss>=9.0
+pydirectinput>=1.0.4
+opencv-python>=4.8
+numpy>=1.24
+pillow>=10.0

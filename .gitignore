@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv-onejev/
+
+# What the bot writes while it plays (logs, screenshots, recordings): local only
+bot_log.jsonl
+matches.jsonl
+onejev_server.log
+recordings/
+probe_debug/
+calibration.png
+ai_input_debug.jpg
+probe_test.png
+placement_plan.jpg
+*.log
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
